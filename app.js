@@ -33,6 +33,7 @@ $('#target-letter').text(sentences[senIndex][charIndex]);
 
 let myString = sentences[senIndex];
 splitMeUp();
+firstHighlight()
 
 function splitMeUp() {
     let spans = myString.split(''); // Splits the string into a lot of spans --
@@ -106,6 +107,7 @@ function setGlyph(x) {
 }
 
 function correctInput() {
+    updateHighlight();
     setGlyph("yes");
     endOfsentence();
 }
@@ -129,11 +131,34 @@ function advanceSentence() {
         senIndex++;
         charIndex = 0;
         $('.char').remove(); // Removes all of the individual spans for the sentence --
-        myString = sentences[senIndex]; // Advances the
+        myString = sentences[senIndex]; // Updates myString for next splitMeUp() --
         splitMeUp();
-        $('#target-letter').text(sentences[senIndex][charIndex]);
+        firstHighlight();
+        $('#target-letter').text(sentences[senIndex][charIndex]); // Updates #target-letter --
     } else { // Trigger youWin() --
         youWin();
     }
 }
 
+function updateHighlight(){
+    if(firstOn == true){
+        $('#span' + (charIndex + 0)).css({
+            "background-color": "white"
+        });
+    }
+    for (let index = 0; index < myString.length; index++) {
+        $('#span' + (index + 1)).css({
+            "background-color": "white"
+        });
+    }
+    $('#span' + (charIndex + 1)).css({
+        "background-color": "yellow"
+    });
+}
+
+let firstOn = true;
+function firstHighlight(){
+    $('#span' + (charIndex + 0)).css({
+        "background-color": "yellow"
+    });
+}
