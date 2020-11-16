@@ -7,7 +7,15 @@ let sentences = ['ten ate neite ate nee enet ite ate inet ent eate',
     'itant eate anot eat nato inate eat anot tain eat',
     'nee ene ate ite tent tiet ent ine ene ete ene ate'];
 
-sentences = ["one", "two", "three"];
+sentences = ["one two three", "four five six"];
+
+// Determines the number of words in the array and stores it in variable numberOfWords --
+let numberOfWords = 0;
+for (let index = 0; index < sentences.length; index++) {
+    let x = sentences[index].split(' ');
+    let y = x.length;
+    numberOfWords = numberOfWords + y;
+}
 
 // Shift Key Listeners --
 const shiftKeyDown = $('body').keydown(function (e) {
@@ -24,10 +32,10 @@ const shiftKeyUp = $('body').keyup(function (e) {
     }
 });
 
-
 let senIndex = 0;
 let charIndex = 0;
 let gameOver = false;
+let numberOfMistakes = 0;
 
 $('#target-letter').text(sentences[senIndex][charIndex]);
 
@@ -84,6 +92,10 @@ function inputCheck(onScreen) {
 function youWin() {
     gameOver = true;
     console.log('You Win!');
+    let wpm = numberOfWords / totalTime - 2 * numberOfMistakes;
+    console.log("Total Time: " + totalTime + " Minutes");
+    console.log(minutes + ":" + seconds);
+    console.log("Words Per Minute: " + wpm);
 }
 
 function setGlyph(x) {
@@ -114,6 +126,7 @@ function correctInput() {
 
 function incorrectInput() {
     setGlyph("no");
+    numberOfMistakes++;
 }
 
 function endOfsentence() {
@@ -140,8 +153,8 @@ function advanceSentence() {
     }
 }
 
-function updateHighlight(){
-    if(firstOn == true){
+function updateHighlight() {
+    if (firstOn == true) {
         $('#span' + (charIndex + 0)).css({
             "background-color": "white"
         });
@@ -157,8 +170,22 @@ function updateHighlight(){
 }
 
 let firstOn = true;
-function firstHighlight(){
+function firstHighlight() {
     $('#span' + (charIndex + 0)).css({
         "background-color": "yellow"
     });
+}
+
+let countUp = setInterval(myTimer, 1000);
+let seconds = 0;
+let minutes = 0;
+let totalTime = 0;
+function myTimer() {
+    if (seconds < 59) {
+        seconds++;
+    } else {
+        seconds = 0
+        minutes++;
+    }
+    totalTime = minutes + seconds / 60;
 }
