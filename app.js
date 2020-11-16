@@ -28,7 +28,9 @@ const shiftKeyUp = $('body').keyup(function (e) {
 let senIndex = 0;
 let charIndex = 0;
 
-$('#sentence').text(sentences[senIndex][charIndex]);
+$('#sentence').text(sentences[senIndex]);
+$('#target-letter').text(sentences[senIndex][charIndex]);
+
 let winCount = 0;
 
 $('body').keypress(function (e) {
@@ -50,68 +52,30 @@ $('body').keypress(function (e) {
         onScreen = " ";
     }
 
-    sentenceCheck();
+    charCheck(onScreen);
 
-    function sentenceCheck() { // If you haven't reached the last sentence --
-        if (senIndex == sentences.length) {
-            
-        } else {
-            charCheck();
-        }
-    }
-
-    function charCheck() {
-        if (charIndex < sentences[senIndex].length - 1) { // If you haven't reached the end of the sentence --
-            inputCheck();
-        } else {
-            charIndex = 0;
-            senIndex++;
-            console.log("end of sentence")
-            winCount++
-            if(winCount == sentences.length){
-                console.log('you win!')
-            }
-            if(senIndex != sentences.length){
-                $('#sentence').text(sentences[senIndex][charIndex]);
-            }
-
-        }
-    }
-
-    function inputCheck() {
-        if (onScreen == sentences[senIndex][charIndex]) {
-            //console.log("Correct Key");
-            charIndex++;
-            $('#sentence').text(sentences[senIndex][charIndex]);
-        } else {
-            console.log("Wrong Key");
-        }
-    }
-
-    // if (charIndex < sentences[senIndex].length) { // If you haven't reached the end of the sentence --
-    //     $('#sentence').text(sentences[senIndex][charIndex]);
-    //     charIndex++;
-    // } else {
-    //     charIndex = 0;
-    //     $('#sentence').text(sentences[senIndex][charIndex]);
-    // }
-
-
-
-
-
-
-
-
-
-    // if (charIndex < sentences[senIndex].length) { // If you haven't reached the end of the sentence --
-    //     if (onScreen == sentences[senIndex][charIndex]) { // If you type the correct letter --
-    //         console.log("Yes");
-    //         charIndex++;
-    //         $('#sentence').text(sentences[senIndex][charIndex]);
-    //     } else {
-    //         console.log("No");
-
-    //     }
-    // }
 });
+
+function charCheck(onScreen) {
+    if (charIndex < sentences[senIndex].length - 1) { // If you haven't reached the end of the sentence --
+        inputCheck(onScreen);
+    } else {
+        charIndex = 0; // Reset Character Index --
+        senIndex++; // Advance to next sentence --
+        $('#sentence').text(sentences[senIndex]);
+        winCount++
+        if (winCount == sentences.length) {
+            console.log('you win!')
+        }
+    }
+}
+
+function inputCheck(onScreen) {
+    if (onScreen == sentences[senIndex][charIndex]) {
+        //console.log("Correct Key");
+        charIndex++;
+        $('#target-letter').text(sentences[senIndex][charIndex]);
+    } else {
+        console.log("Wrong Key");
+    }
+}
