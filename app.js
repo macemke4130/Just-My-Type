@@ -27,13 +27,27 @@ const shiftKeyUp = $('body').keyup(function (e) {
 
 let senIndex = 0;
 let charIndex = 0;
+let gameOver = false;
 
-$('#sentence').text(sentences[senIndex]);
 $('#target-letter').text(sentences[senIndex][charIndex]);
 
-let winCount = 0;
+let myString = sentences[senIndex];
+splitMeUp();
+
+function splitMeUp() {
+    let spans = myString.split(''); // Splits the string into a lot of spans --
+    for (let index = 0; index < spans.length; index++) {
+        let $myChar = $('<span class="char"></span>');
+        $myChar.attr('id', 'span' + index);
+        $myChar.text(spans[index]);
+        $('#sentence').append($myChar);
+    }
+}
 
 $('body').keypress(function (e) {
+    $('#feedback').css({
+        "opacity": "100"
+    });
     let x = e.which;
 
     $('#' + x).animate({
@@ -52,30 +66,74 @@ $('body').keypress(function (e) {
         onScreen = " ";
     }
 
-    charCheck(onScreen);
+    if (gameOver == false) {
+        inputCheck(onScreen);
+    }
 
 });
 
-function charCheck(onScreen) {
-    if (charIndex < sentences[senIndex].length - 1) { // If you haven't reached the end of the sentence --
-        inputCheck(onScreen);
+function inputCheck(onScreen) {
+    if (onScreen == sentences[senIndex][charIndex]) {
+        correctInput();
     } else {
-        charIndex = 0; // Reset Character Index --
-        senIndex++; // Advance to next sentence --
-        $('#sentence').text(sentences[senIndex]);
-        winCount++
-        if (winCount == sentences.length) {
-            console.log('you win!')
-        }
+        incorrectInput();
     }
 }
 
-function inputCheck(onScreen) {
-    if (onScreen == sentences[senIndex][charIndex]) {
-        //console.log("Correct Key");
-        charIndex++;
-        $('#target-letter').text(sentences[senIndex][charIndex]);
-    } else {
-        console.log("Wrong Key");
+function youWin() {
+    gameOver = true;
+    console.log('You Win!');
+}
+
+function setGlyph(x) {
+    let mySpan = $('<span></span>');
+    switch (x) {
+        case "yes":
+            mySpan.addClass('glyphicon glyphicon-ok');
+            $('#feedback').append(mySpan);
+            break;
+        case "no":
+            mySpan.addClass('glyphicon glyphicon-remove');
+            $('#feedback').append(mySpan);
+            break;
+        case "reset":
+            $('#feedback').animate({
+                "opacity": "0"
+            });
+            setTimeout(function () { $('#feedback').text(''); }, 500);
+            break;
     }
 }
+
+function correctInput() {
+    setGlyph("yes");
+    endOfsentence();
+}
+
+function incorrectInput() {
+    setGlyph("no");
+}
+
+function endOfsentence() {
+    if (charIndex == sentences[senIndex].length - 1) { // If you've correctly reached the last character in the sentence --
+        advanceSentence();
+        setGlyph("reset");
+    } else { // If you haven't reached the end of the sentence yet, but you still hit the correct key --
+        charIndex++;
+        $('#target-letter').text(sentences[senIndex][charIndex]);
+    }
+}
+
+function advanceSentence() {
+    if (senIndex < sentences.length - 1) { // Advance to the next sentence --
+        senIndex++;
+        charIndex = 0;
+        $('.char').remove(); // Removes all of the individual spans for the sentence --
+        myString = sentences[senIndex]; // Advances the
+        splitMeUp();
+        $('#target-letter').text(sentences[senIndex][charIndex]);
+    } else { // Trigger youWin() --
+        youWin();
+    }
+}
+
