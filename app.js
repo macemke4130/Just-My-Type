@@ -7,7 +7,8 @@ let sentences = ['ten ate neite ate nee enet ite ate inet ent eate',
     'itant eate anot eat nato inate eat anot tain eat',
     'nee ene ate ite tent tiet ent ine ene ete ene ate'];
 
-sentences = ["one two three", "four five six"];
+    // Dummy array for faster prototyping --
+//sentences = ["one two three", "four five six"];
 
 // Determines the number of words in the array and stores it in variable numberOfWords --
 let numberOfWords = 0;
@@ -39,6 +40,7 @@ let numberOfMistakes = 0;
 
 $('#target-letter').text(sentences[senIndex][charIndex]);
 
+// Creates string out of the first sentence --
 let myString = sentences[senIndex];
 splitMeUp();
 firstHighlight()
@@ -91,11 +93,37 @@ function inputCheck(onScreen) {
 
 function youWin() {
     gameOver = true;
-    console.log('You Win!');
+    $('#target-letter').text(''); // Clear the #target-letter <div> --
+
     let wpm = numberOfWords / totalTime - 2 * numberOfMistakes;
-    console.log("Total Time: " + totalTime + " Minutes");
-    console.log(minutes + ":" + seconds);
-    console.log("Words Per Minute: " + wpm);
+
+    // Adds a zero for better output formatting --
+    if(seconds < 10){
+        seconds = "0" + seconds;
+    }
+
+    // Outputs --
+    let $outputTime = $('<div></div>');
+    $outputTime.text('Total Time: ' + minutes + ':' + seconds);
+    let $outputWPM = $('<div></div>');
+    $outputWPM.text('Words Per Minute: ' + wpm);
+    let $outputMistakes = $('<div></div>');
+    $outputMistakes.text('Number of Mistakes: ' + numberOfMistakes);
+
+    let $playAgain = $('<button></button>');
+    $playAgain.text('Play Again?');
+    $playAgain.click(function(){
+        location.reload();
+    });
+    
+    $('#target-letter').css({
+        "font-size": "18px"
+    });
+
+    $('#target-letter').append($outputTime);
+    $('#target-letter').append($outputWPM);
+    $('#target-letter').append($outputMistakes);
+    $('#target-letter').append($playAgain);
 }
 
 function setGlyph(x) {
@@ -176,6 +204,7 @@ function firstHighlight() {
     });
 }
 
+// Timer for calculating wordsPerMinute --
 let countUp = setInterval(myTimer, 1000);
 let seconds = 0;
 let minutes = 0;
